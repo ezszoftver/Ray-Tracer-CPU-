@@ -197,6 +197,7 @@ glm::vec3 PathTrace(Ray ray, int nDepth)
 
     float minT = 1000000.0f;
     Hit hi, finalHi;
+    finalHi.m_bHit = false;
 
     for (int i = 0; i < (int)objects.size(); i++)
     {
@@ -218,15 +219,15 @@ glm::vec3 PathTrace(Ray ray, int nDepth)
         return finalHi.m_v3Color;
     }
 
-    Ray randomRay;
-    randomRay.m_v3Pos = finalHi.m_v3Pos;
-    randomRay.m_v3Dir = RandomDirection(finalHi.m_v3Normal);
-
     float fDiffuseIntensity = glm::dot(-ray.m_v3Dir, finalHi.m_v3Normal);
     if (fDiffuseIntensity <= 0.0f) 
     {
         return glm::vec3(0, 0, 0);
     }
+
+    Ray randomRay;
+    randomRay.m_v3Pos = finalHi.m_v3Pos;
+    randomRay.m_v3Dir = RandomDirection(finalHi.m_v3Normal);
 
     glm::vec3 v3OriginalColor = fDiffuseIntensity * finalHi.m_v3Color;
     glm::vec3 v3NewColor = PathTrace(randomRay, nDepth + 1);
