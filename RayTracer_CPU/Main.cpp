@@ -218,7 +218,7 @@ glm::vec3 PathTrace(Ray ray, int nDepth)
     }
 
     Ray randomRay;
-    randomRay.m_v3Pos = finalHi.m_v3Pos;
+    randomRay.m_v3Pos = finalHi.m_v3Pos + (finalHi.m_v3Normal * 0.001f);
     randomRay.m_v3Dir = RandomDirection(finalHi.m_v3Normal);
 
     glm::vec3 v3OriginalColor = fDiffuseIntensity * finalHi.m_v3Color;
