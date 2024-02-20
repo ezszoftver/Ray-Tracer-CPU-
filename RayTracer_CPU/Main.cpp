@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include <omp.h> // parallel for
 #include "GLFW/glfw3.h"
 #include "glm.hpp"
+#include "gtc/random.hpp"
 
 #define WINDOW_WIDTH 768
 #define WINDOW_HEIGHT 768
@@ -129,18 +131,8 @@ float Random()
 
 glm::vec3 RandomVector() 
 {
-    glm::vec3 v3Dir;
-
-    do 
-    {
-        // [0.0f .. 1.0f] to [-1.0f .. 1.0f]
-        v3Dir.x = (Random() * 2.0f) - 1.0f;
-        v3Dir.y = (Random() * 2.0f) - 1.0f;
-        v3Dir.z = (Random() * 2.0f) - 1.0f;
-    } 
-    while (glm::dot(v3Dir, v3Dir) < 0.01f);
-
-    return glm::normalize(v3Dir);
+    glm::vec3 v3Dir = glm::sphericalRand(1.0f);
+    return v3Dir;
 }
 
 glm::vec3 RandomDirection(glm::vec3 v3Normal) 
