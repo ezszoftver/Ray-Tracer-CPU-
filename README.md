@@ -1,6 +1,6 @@
-![Screenshot](https://github.com/ezszoftver/Ray-Tracer-CPU-/assets/9680136/4a51f9bf-7eaa-4c30-bc6c-507f78f50987)
+![V1 1](https://github.com/ezszoftver/Ray-Tracer-CPU-/assets/9680136/a8a04ec4-68f0-4029-bae9-8ad9427d7ec9)
 
-### RayTracer (CPU) v1.0
+### RayTracer (CPU) v1.1
 
 Slow, but simple.
 
