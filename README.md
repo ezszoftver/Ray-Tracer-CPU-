@@ -1,4 +1,4 @@
-![V1 1](https://github.com/ezszoftver/Ray-Tracer-CPU-/assets/9680136/a8a04ec4-68f0-4029-bae9-8ad9427d7ec9)
+![kep3](https://github.com/ezszoftver/Ray-Tracer-CPU-/assets/9680136/70f575c0-8348-4171-ae0b-8212b627ea26)
 
 ### RayTracer (CPU) v1.2
 
