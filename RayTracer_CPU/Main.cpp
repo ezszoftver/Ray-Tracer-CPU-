@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <algorithm> // std::sort
 #include <omp.h> // parallel for
 #include "GLFW/glfw3.h"
 #include "glm.hpp"
@@ -8,8 +9,9 @@
 
 #define WINDOW_WIDTH 768
 #define WINDOW_HEIGHT 768
-const int nNumSamples = 300;
+const int nNumSamples = 1000;
 const int nMaxDepth = 5;
+#define MEDIAN 5
 
 #define EPSILON 0.0001f
 
@@ -149,6 +151,14 @@ class BitmapImage
         *pBlue  = data[(y * WINDOW_WIDTH * 3) + (x * 3) + 2];
     }
 
+    int GetMedian(std::vector<int> *pList) 
+    {
+        std::sort(pList->begin(), pList->end());
+
+        int id = (MEDIAN * MEDIAN) / 2;
+        return (*pList)[id];
+    }
+
 public:
     uint8_t* data;
 
@@ -173,12 +183,63 @@ public:
         data[(y * WINDOW_WIDTH * 3) + (x * 3) + 1] = (uint8_t)glm::clamp(nGreen, 0, 255);
         data[(y * WINDOW_WIDTH * 3) + (x * 3) + 2] = (uint8_t)glm::clamp(nBlue, 0, 255);
     }
+
+    void MedianFilter() 
+    {
+        uint64_t nSize = WINDOW_WIDTH * WINDOW_HEIGHT * 3;
+        uint8_t* dst = new unsigned char[nSize];
+        // Clear
+        memset(dst, 0, nSize);
+
+        #pragma omp parallel for
+        for (int x = 0; x < WINDOW_WIDTH; x++)
+        {
+            for (int y = 0; y < WINDOW_HEIGHT; y++) 
+            {
+                std::vector<int> listRed;
+                std::vector<int> listGreen;
+                std::vector<int> listBlue;
+
+                for (int i = (-MEDIAN / 2); i <= (MEDIAN / 2); i++)
+                {
+                    for (int j = (-MEDIAN / 2); j <= (MEDIAN / 2); j++)
+                    {
+                        int nRed, nGreen, nBlue;
+
+                        int x2 = x + i;
+                        int y2 = y + j;
+                        if (x2 < 0) { x2 = 0; }
+                        if (x2 > (WINDOW_WIDTH - 1)) { x2 = WINDOW_WIDTH - 1; }
+                        if (y2 < 0) { y2 = 0; }
+                        if (y2 > (WINDOW_HEIGHT - 1)) { y2 = WINDOW_HEIGHT - 1; }
+
+                        GetColor(x2, y2, &nRed, &nGreen, &nBlue);
+                        listRed.push_back(nRed);
+                        listGreen.push_back(nGreen);
+                        listBlue.push_back(nBlue);
+                    }
+                }
+
+                int nNewRed = GetMedian(&listRed);
+                int nNewGreen = GetMedian(&listGreen);
+                int nNewBlue = GetMedian(&listBlue);
+                
+                dst[(y * WINDOW_WIDTH * 3) + (x * 3) + 0] = (uint8_t)nNewRed;
+                dst[(y * WINDOW_WIDTH * 3) + (x * 3) + 1] = (uint8_t)nNewGreen;
+                dst[(y * WINDOW_WIDTH * 3) + (x * 3) + 2] = (uint8_t)nNewBlue;
+            }
+        }
+
+        // apply
+        data = dst;
+    }
 };
 
 BitmapImage bitmap;
 std::vector< Object* > objects;
 glm::vec3 v3Eye = glm::vec3(0, 0, 5.0f);
 const float fBrightness = (2.0f * 3.141592654f) * (1.0f / float(nNumSamples));
+
 
 glm::vec3 PathTrace(Ray ray, int nDepth) 
 {
@@ -454,6 +515,19 @@ int main()
         {
             Update();
             s++;
+        }
+        else
+        {
+            static bool bFirst = true;
+
+            if (true == bFirst) 
+            {
+                for (int i = 0; i < 10; i++) 
+                {
+                    bitmap.MedianFilter();
+                }
+                bFirst = false;
+            }
         }
         Draw();
 

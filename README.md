@@ -1,8 +1,9 @@
 ![V1 1](https://github.com/ezszoftver/Ray-Tracer-CPU-/assets/9680136/a8a04ec4-68f0-4029-bae9-8ad9427d7ec9)
 
-### RayTracer (CPU) v1.1
+### RayTracer (CPU) v1.2
 
 Slow, but simple.
+With Noise filter.
 
 License:
 Free to use.
