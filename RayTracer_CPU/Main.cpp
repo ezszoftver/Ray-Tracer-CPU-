@@ -534,6 +534,8 @@ void Update()
             bitmap.AddSample(x, y, sample);
         }
     }
+
+    bitmap.Finalize();
 }
 
 void Draw()
