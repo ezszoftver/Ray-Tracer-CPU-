@@ -14,4 +14,4 @@ Tested:
 Windows 11
 
 My Webpage:
-https://ezszoftver.hu
+https://ezszoftver.hu/en
