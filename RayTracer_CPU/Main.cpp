@@ -6,6 +6,7 @@
 #include "GLFW/glfw3.h"
 #include "glm.hpp"
 #include "gtc/random.hpp"
+#include <Windows.h>
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
@@ -596,6 +597,7 @@ int main()
                 // opcionális zajcsökkentés:
                 // for (int i = 0; i < 10; i++)
                 //     bitmap.MedianFilter();
+
                 bFirst = false;
             }
         }
@@ -603,6 +605,8 @@ int main()
         Draw();
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        Sleep(20);
     }
 
     glfwTerminate();
