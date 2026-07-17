@@ -1,9 +1,7 @@
-![kep3](https://github.com/ezszoftver/Ray-Tracer-CPU-/assets/9680136/70f575c0-8348-4171-ae0b-8212b627ea26)
+<img width="717" height="715" alt="Screenshot01" src="https://github.com/user-attachments/assets/206e40e4-4dc2-4824-b61d-24b5bc8cf1eb" />
 
-### RayTracer (CPU) v1.2
 
-Slow, but simple.
-With Noise filter.
+### Global Illumination (CPU) v1.3
 
 License:
 Free to use.
@@ -13,8 +11,7 @@ Build:
 2. Build
 
 Tested:
-Windows 11, 
-Ryzen 5 3600X, x64 CPU
+Windows 11
 
 My Webpage:
 https://ezszoftver.hu
