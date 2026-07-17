@@ -128,30 +128,15 @@ float Random()
     return ((float)rand() / (float)RAND_MAX);
 }
 
-// cosine-weighted hemisphere sampling
-glm::vec3 RandomDirection(glm::vec3 normal)
+glm::vec3 RandomVector()
 {
-    float r1 = Random();
-    float r2 = Random();
+    glm::vec3 v3Dir = glm::sphericalRand(1.0f);
+    return v3Dir;
+}
 
-    float phi = 2.0f * 3.14159265f * r1;
-    float cosTheta = sqrt(1.0f - r2);
-    float sinTheta = sqrt(r2);
-
-    glm::vec3 tangent;
-    if (fabs(normal.x) > 0.1f)
-        tangent = glm::normalize(glm::cross(glm::vec3(0, 1, 0), normal));
-    else
-        tangent = glm::normalize(glm::cross(glm::vec3(1, 0, 0), normal));
-
-    glm::vec3 bitangent = glm::cross(normal, tangent);
-
-    glm::vec3 dir =
-        tangent * (cos(phi) * sinTheta) +
-        bitangent * (sin(phi) * sinTheta) +
-        normal * cosTheta;
-
-    return glm::normalize(dir);
+glm::vec3 RandomDirection(glm::vec3 v3Normal)
+{
+    return glm::normalize(RandomVector() + v3Normal);
 }
 
 class BitmapImage
@@ -256,7 +241,8 @@ BitmapImage bitmap;
 std::vector<Object*> objects;
 glm::vec3 v3Eye = glm::vec3(0, 0, 5.0f);
 
-// direct light sampling with Lambert BRDF
+float LightFalloff = 2.0f;   // állítható fényerő-esés
+
 glm::vec3 DirectLight(const Hit& hit)
 {
     glm::vec3 result(0.0f);
@@ -281,6 +267,9 @@ glm::vec3 DirectLight(const Hit& hit)
 
         glm::vec3 L = glm::normalize(lightPos - hit.m_v3Pos);
 
+        float dist = glm::length(lightPos - hit.m_v3Pos);
+        float falloff = LightFalloff / (dist * dist);
+
         Ray shadow;
         shadow.m_v3Pos = hit.m_v3Pos + hit.m_v3Normal * 0.001f;
         shadow.m_v3Dir = L;
@@ -304,7 +293,7 @@ glm::vec3 DirectLight(const Hit& hit)
         {
             float cosTheta = glm::dot(hit.m_v3Normal, L);
             if (cosTheta > 0.0f)
-                result += obj->m_v3Color * brdf * cosTheta;
+                result += obj->m_v3Color * brdf * cosTheta * falloff;
         }
     }
 
